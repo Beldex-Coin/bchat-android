@@ -103,6 +103,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
   private Stub<MediaKeyboard> emojiDrawer;
   private ViewGroup         playbackControlsContainer;
   private TextView          charactersLeft;
+  private TextView          mediaCount;
   private View              closeButton;
 
   private ControllableViewPager         fragmentPager;
@@ -171,6 +172,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     mediaRail                 = view.findViewById(R.id.mediasend_media_rail);
     playbackControlsContainer = view.findViewById(R.id.mediasend_playback_controls_container);
     charactersLeft            = view.findViewById(R.id.mediasend_characters_left);
+    mediaCount                = view.findViewById(R.id.mediasend_media_count);
     closeButton               = view.findViewById(R.id.mediasend_close_button);
 
     View sendButtonBkg = view.findViewById(R.id.mediasend_send_button_bkg);
@@ -220,8 +222,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
     String    displayName = Optional.fromNullable(recipient.getName())
                                     .or(Optional.fromNullable(recipient.getProfileName())
                                                 .or(recipient.getAddress().serialize()));
-    // Same hint as the chat input bar (Figma "Write message here..").
-    composeText.setHint(getString(R.string.ConversationActivity_message));
+    composeText.setHint(getString(R.string.MediaSendActivity_add_a_caption));
     composeText.setOnEditorActionListener((v, actionId, event) -> {
       boolean isSend = actionId == EditorInfo.IME_ACTION_SEND;
       if (isSend) sendButton.performClick();
@@ -354,6 +355,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
       mediaRail.setVisibility(View.VISIBLE);
       captionText.setVisibility((media.size() > 1 || media.get(0).getCaption().isPresent()) ? View.VISIBLE : View.GONE);
       mediaRailAdapter.setMedia(media);
+      updateMediaCount(fragmentPager.getCurrentItem(), media.size());
 
       int currentItem = fragmentPager.getCurrentItem();
       if (currentItem < media.size()) {
@@ -370,6 +372,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
       fragmentPager.setCurrentItem(position, true);
       mediaRailAdapter.setActivePosition(position);
       mediaRail.smoothScrollToPosition(position);
+      updateMediaCount(position, fragmentPagerAdapter.getAllMedia().size());
 
       if (fragmentPagerAdapter.getAllMedia().size() > position) {
         captionText.setText(fragmentPagerAdapter.getAllMedia().get(position).getCaption().or(""));
@@ -393,6 +396,11 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
       mediaRailAdapter.setAddButtonListener(() -> controller.onAddMediaClicked(bucketId));
     });
+  }
+
+  private void updateMediaCount(int position, int total) {
+    mediaCount.setVisibility(total > 1 ? View.VISIBLE : View.GONE);
+    mediaCount.setText(String.format(Locale.getDefault(), "%d / %d", position + 1, total));
   }
 
   private void attachPlaybackControlsWhenReady(int position) {

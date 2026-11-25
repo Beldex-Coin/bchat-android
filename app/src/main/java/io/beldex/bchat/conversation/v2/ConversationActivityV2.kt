@@ -3362,6 +3362,7 @@ class ConversationActivityV2 : BaseAppCompatActivity(), InputBarDelegate,
             allSentByCurrentUser && allHaveServerHash -> {
                 val bottomSheet = DeleteOptionsBottomSheet().apply {
                     this.recipient = recipient
+                    this.anchorTopOnScreen = IntArray(2).also { binding.inputBar.getLocationOnScreen(it) }[1]
 
                     onDeleteForMeTapped = {
                         messages.forEach {

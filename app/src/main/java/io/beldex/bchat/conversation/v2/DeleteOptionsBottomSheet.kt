@@ -18,6 +18,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -68,6 +72,9 @@ class DeleteOptionsBottomSheet : BottomSheetDialogFragment() {
     var onDeleteForEveryoneTapped: (() -> Unit)? = null
     var onCancelTapped: (() -> Unit)? = null
 
+    var anchorTopOnScreen: Int = 0
+    private var bottomGap by mutableIntStateOf(0)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -90,7 +97,10 @@ class DeleteOptionsBottomSheet : BottomSheetDialogFragment() {
                     darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
                 ) {
                     DialogPanel(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 15.dp)
+                            .padding(bottom = with(LocalDensity.current) { bottomGap.toDp() })
                     ) {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -164,13 +174,21 @@ class DeleteOptionsBottomSheet : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (view.parent as? View)?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        view.post {
+            if (anchorTopOnScreen <= 0 || !isAdded) return@post
+            val location = IntArray(2)
+            view.getLocationOnScreen(location)
+            val viewBottom = location[1] + view.height
+            val gap = (ANCHOR_GAP_DP * resources.displayMetrics.density).toInt()
+            bottomGap = (viewBottom - (anchorTopOnScreen - gap)).coerceAtLeast(0)
+        }
     }
 
     override fun onStart() {
         super.onStart()
         val window = dialog?.window ?: return
         val isLightMode = UiModeUtilities.isDayUiMode(requireContext())
-        window.setDimAmount(if (isLightMode) 0.1f else 0.75f)
+        window.setDimAmount(if (isLightMode) 0.1f else 0f)
         applyLandscapeSizing()
     }
 
@@ -190,5 +208,9 @@ class DeleteOptionsBottomSheet : BottomSheetDialogFragment() {
             bottomSheet.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
         }
         bottomSheet.requestLayout()
+    }
+
+    companion object {
+        private const val ANCHOR_GAP_DP = 10
     }
 }

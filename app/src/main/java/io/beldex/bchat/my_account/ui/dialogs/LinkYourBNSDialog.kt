@@ -9,10 +9,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import io.beldex.bchat.compose_utils.DialogCancelButton
+import io.beldex.bchat.compose_utils.CloseTile
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.OpenSans
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -160,21 +160,7 @@ fun LinkYourBNSDialog(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(22.dp)
-                        .background(MaterialTheme.appColors.nicknameCancelBackground)
-                        .border(1.dp, MaterialTheme.appColors.nicknameCancelBorder)
-                        .clickable { onDismissRequest(false) }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_close),
-                        contentDescription = null,
-                        tint = MaterialTheme.appColors.cancelIconTint,
-                        modifier = Modifier.size(14.dp)
-                    )
-                }
+                CloseTile(onClick = { onDismissRequest(false) })
             }
             Spacer(modifier = Modifier.height(18.dp))
             Text(

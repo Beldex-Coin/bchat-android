@@ -14,7 +14,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,7 +79,7 @@ fun HomeHeader(
                     )
             ) {
                 SelfAvatarPlaceholder(displayName = displayName)
-                selfPhotoFile(publicKey)?.let { file ->
+                selfPhotoFile(publicKey, rememberResumeCount())?.let { file ->
                     val painter = rememberAsyncImagePainter(
                         ImageRequest.Builder(LocalContext.current)
                             .data(file)
@@ -152,10 +159,25 @@ fun HomeHeader(
 }
 
 
+/** Increments each time the screen resumes, so a photo set or removed elsewhere is picked up on return. */
 @Composable
-private fun selfPhotoFile(publicKey: String): File? {
+private fun rememberResumeCount(): Int {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var count by remember { mutableIntStateOf(0) }
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) count++
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+    return count
+}
+
+@Composable
+private fun selfPhotoFile(publicKey: String, refreshKey: Int): File? {
     val context = LocalContext.current
-    return remember(publicKey) {
+    return remember(publicKey, refreshKey) {
         runCatching {
             val address = Address.fromSerialized(publicKey)
             val photo = Recipient.from(context, address, false).contactPhoto

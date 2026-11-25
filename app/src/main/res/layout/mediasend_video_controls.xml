@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:background="@drawable/editor_video_controls_background"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="22dp"
+    android:paddingEnd="25dp">
+
+    <FrameLayout
+        android:layout_width="20dp"
+        android:layout_height="20dp">
+
+        <ImageButton
+            android:id="@id/exo_play"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@null"
+            android:contentDescription="@string/audio_view__play_accessibility_description"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_editor_play" />
+
+        <ImageButton
+            android:id="@id/exo_pause"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@null"
+            android:contentDescription="@string/audio_view__pause_accessibility_description"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_editor_pause" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@id/exo_position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:fontFamily="@font/roboto_mono"
+        android:textColor="@color/text_white"
+        android:textSize="11sp"
+        tools:text="00:03" />
+
+    <androidx.media3.ui.DefaultTimeBar
+        android:id="@id/exo_progress"
+        android:layout_width="0dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="13dp"
+        android:layout_marginEnd="10dp"
+        android:layout_weight="1"
+        app:bar_height="2dp"
+        app:buffered_color="@color/editor_video_track"
+        app:played_color="@color/rounded_indicator"
+        app:scrubber_drawable="@drawable/editor_video_knob"
+        app:touch_target_height="24dp"
+        app:unplayed_color="@color/editor_video_track" />
+
+    <TextView
+        android:id="@id/exo_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_mono"
+        android:textColor="@color/editor_video_duration"
+        android:textSize="11sp"
+        tools:text="00:08" />
+
+</LinearLayout>

@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.shape.ShapeAppearanceModel;
 import io.beldex.bchat.conversation.v2.utilities.ThumbnailView;
 import io.beldex.bchat.mediasend.Media;
 import io.beldex.bchat.util.StableIdGenerator;
@@ -146,6 +147,15 @@ public class MediaRailAdapter extends RecyclerView.Adapter<MediaRailAdapter.Medi
       outline          = itemView.findViewById(R.id.rail_item_outline);
       deleteButton     = itemView.findViewById(R.id.rail_item_delete);
       captionIndicator = itemView.findViewById(R.id.rail_item_caption);
+
+      image.setClipToOutline(false);
+      View thumbnail = image.findViewById(R.id.thumbnail_image);
+      if (thumbnail instanceof ShapeableImageView) {
+        ((ShapeableImageView) thumbnail).setShapeAppearanceModel(new ShapeAppearanceModel());
+      }
+      if (thumbnail != null) {
+        thumbnail.setClipToOutline(false);
+      }
     }
 
     void bind(@NonNull Media media, boolean isActive, @NonNull RequestManager glideRequests,

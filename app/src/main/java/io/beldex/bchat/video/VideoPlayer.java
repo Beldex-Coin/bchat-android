@@ -19,6 +19,7 @@ package io.beldex.bchat.video;
 import io.beldex.bchat.util.BChatToast;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -27,7 +28,6 @@ import android.widget.Toast;
 import android.widget.VideoView;
 import io.beldex.bchat.mms.PartAuthority;
 import io.beldex.bchat.mms.VideoSlide;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.media3.common.MediaItem;
@@ -37,13 +37,10 @@ import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.ui.LegacyPlayerControlView;
 import androidx.media3.ui.PlayerView;
-
 import com.beldex.libbchat.utilities.ViewUtil;
 import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.attachments.AttachmentServer;
-
 import java.io.IOException;
-
 import io.beldex.bchat.R;
 
 @UnstableApi
@@ -53,6 +50,7 @@ public class VideoPlayer extends FrameLayout {
 
   @Nullable private final VideoView           videoView;
   @Nullable private final PlayerView          exoView;
+  @NonNull  private final View                playOverlay;
 
   @Nullable private ExoPlayer                 exoPlayer;
   @Nullable private LegacyPlayerControlView   exoControls;
@@ -72,9 +70,10 @@ public class VideoPlayer extends FrameLayout {
 
     inflate(context, R.layout.video_player, this);
 
-    this.exoView   = ViewUtil.findById(this, R.id.video_view);
-    this.videoView = null;
-    this.exoControls = new LegacyPlayerControlView(getContext());
+    this.exoView     = ViewUtil.findById(this, R.id.video_view);
+    this.playOverlay = ViewUtil.findById(this, R.id.video_play_overlay);
+    this.videoView   = null;
+    this.exoControls = (LegacyPlayerControlView) LayoutInflater.from(context).inflate(R.layout.video_player_controls, this, false);
     this.exoControls.setShowTimeoutMs(-1);
   }
 
@@ -105,6 +104,10 @@ public class VideoPlayer extends FrameLayout {
     return null;
   }
 
+  public @Nullable Player getPlayer() {
+    return exoPlayer;
+  }
+
   public void cleanup() {
     if (this.attachmentServer != null) {
       this.attachmentServer.stop();
@@ -124,6 +127,16 @@ public class VideoPlayer extends FrameLayout {
   {
     exoPlayer = new ExoPlayer.Builder(getContext()).build();
     exoPlayer.addListener(new ExoPlayerListener(window));
+    exoPlayer.addListener(new Player.Listener() {
+      @Override
+      public void onIsPlayingChanged(boolean isPlaying) {
+        playOverlay.setVisibility(isPlaying ? GONE : VISIBLE);
+      }
+    });
+    playOverlay.setVisibility(autoplay ? GONE : VISIBLE);
+    playOverlay.setOnClickListener(v -> {
+      if (exoPlayer != null) exoPlayer.play();
+    });
     exoPlayer.setAudioAttributes(AudioAttributes.DEFAULT, true);
     //noinspection ConstantConditions
     exoView.setPlayer(exoPlayer);

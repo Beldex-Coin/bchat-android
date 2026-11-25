@@ -7,178 +7,678 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:parentTag="android.widget.LinearLayout"
-    tools:background="@color/core_grey_60">
+    tools:background="@color/home_screen_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:animateLayoutChanges="true">
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/scribble_close_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/small_spacing"
-            android:layout_marginTop="4dp"
-            android:padding="@dimen/small_spacing"
-            android:background="@drawable/circle_touch_highlight_background"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
+            android:contentDescription="@string/cancel"
             android:focusable="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:src="@drawable/ic_baseline_clear_24"
-                app:tint="@color/chat_header_title"/>
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_editor_close"
+                app:tint="@color/chat_header_title" />
 
         </FrameLayout>
+
+        <TextView
+            android:id="@+id/scribble_crop_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans_regular"
+            android:text="@string/image_editor_crop_title"
+            android:textColor="@color/chat_header_title"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/scribble_close_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/scribble_close_button" />
+
+        <TextView
+            android:id="@+id/scribble_crop_reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:background="?attr/selectableItemBackground"
+            android:fontFamily="@font/roboto_mono"
+            android:padding="8dp"
+            android:text="@string/image_editor_reset"
+            android:textColor="@color/contact_card_action_text"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/scribble_close_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/scribble_close_button" />
 
         <LinearLayout
             android:id="@+id/scribble_toolbar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="@dimen/small_spacing"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/editor_rail_background"
             android:orientation="horizontal"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:paddingTop="0dp">
+            app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/scribble_delete_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                android:src="@drawable/ic_trash_filled_32"
-                app:tint="@color/chat_header_title" />
-
-            <ImageView
-                android:id="@+id/scribble_undo_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                android:src="@drawable/ic_undo_32"
-                app:tint="@color/chat_header_title" />
-
-            <ImageView
+            <FrameLayout
                 android:id="@+id/scribble_text_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                android:src="@drawable/ic_text_32"
-                app:tint="@color/chat_header_title" />
-                
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/editor_tool_background"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:duplicateParentState="true"
+                    android:fontFamily="@font/open_sans_semi_bold"
+                    android:letterSpacing="-0.02"
+                    android:text="Aa"
+                    android:textColor="@color/editor_tool_tint"
+                    android:textSize="16sp"
+                    tools:ignore="HardcodedText" />
+
+            </FrameLayout>
+
             <ImageView
                 android:id="@+id/scribble_draw_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                android:src="@drawable/ic_brush_marker_32"
-                app:tint="@color/chat_header_title" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/editor_tool_background"
+                android:importantForAccessibility="no"
+                android:padding="10dp"
+                android:src="@drawable/ic_editor_pen"
+                app:tint="@color/editor_tool_tint" />
 
             <ImageView
                 android:id="@+id/scribble_highlight_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                android:src="@drawable/ic_brush_highlight_32"
-                app:tint="@color/chat_header_title" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/editor_tool_background"
+                android:importantForAccessibility="no"
+                android:padding="10dp"
+                android:src="@drawable/ic_editor_marker"
+                app:tint="@color/editor_tool_tint" />
 
             <ImageView
                 android:id="@+id/scribble_sticker_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                android:src="@drawable/ic_emoji_32"
-                app:tint="@color/chat_header_title" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/editor_tool_background"
+                android:importantForAccessibility="no"
+                android:padding="10dp"
+                android:src="@drawable/ic_editor_emoji"
+                app:tint="@color/editor_tool_tint" />
 
             <ImageView
                 android:id="@+id/scribble_crop_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                android:src="@drawable/ic_crop_32"
-                app:tint="@color/chat_header_title" />
-
-            <ImageView
-                android:id="@+id/scribble_confirm_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                android:src="@drawable/ic_check_circle_32"
-                app:tint="@color/chat_header_title" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/editor_tool_background"
+                android:importantForAccessibility="no"
+                android:padding="10dp"
+                android:src="@drawable/ic_editor_crop"
+                app:tint="@color/editor_tool_tint" />
 
         </LinearLayout>
 
-        <io.beldex.bchat.scribbles.widget.VerticalSlideColorPicker
-            android:id="@+id/scribble_color_picker"
-            android:layout_width="32dp"
-            android:layout_height="250dp"
-            android:layout_below="@id/scribble_toolbar"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="10dp"
+        <LinearLayout
+            android:id="@+id/scribble_panel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/editor_panel_background"
+            android:clickable="true"
+            android:focusable="false"
+            android:orientation="vertical"
+            android:paddingTop="64dp"
+            android:paddingBottom="21dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/scribble_toolbar"
-            app:pickerBorderColor="@color/white"
-            app:pickerBorderWidth="3dp"
-            app:pickerColors="@array/scribble_colors" />
+            app:layout_constraintStart_toStartOf="parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/scribble_color_palette"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_below="@id/scribble_color_picker"
-            android:layout_alignEnd="@id/scribble_color_picker"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/scribble_color_picker"
-            app:layout_constraintTop_toBottomOf="@+id/scribble_color_picker"
-            app:layout_constraintVertical_bias="0.0" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp">
 
-        <ImageView
-            android:id="@+id/scribble_crop_flip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="8dp"
-            android:src="@drawable/ic_flip_32"
-            app:tint="@color/chat_header_title"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/scribble_crop_rotate" />
+                <LinearLayout
+                    android:id="@+id/scribble_history"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="start|center_vertical"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/scribble_crop_rotate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="8dp"
-            android:src="@drawable/ic_rotate_32"
-            app:tint="@color/chat_header_title"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+                    <ImageView
+                        android:id="@+id/scribble_undo_button"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_editor_undo"
+                        app:tint="@color/editor_history_tint" />
 
-        <ImageView
-            android:id="@+id/scribble_crop_aspect_lock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="8dp"
-            android:src="@drawable/ic_crop_lock_32"
-            app:tint="@color/chat_header_title"
+                    <ImageView
+                        android:id="@+id/scribble_redo_button"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="18dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_editor_redo"
+                        app:tint="@color/editor_history_tint" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end|center_vertical"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/scribble_draw_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="22dp"
+                        android:background="@drawable/editor_chip_background"
+                        android:fontFamily="@font/roboto_mono"
+                        android:gravity="center"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:text="@string/image_editor_pen"
+                        android:textColor="@color/editor_chip_text"
+                        android:textSize="10.5sp" />
+
+                    <TextView
+                        android:id="@+id/scribble_highlight_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="22dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/editor_chip_background"
+                        android:fontFamily="@font/roboto_mono"
+                        android:gravity="center"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:text="@string/image_editor_marker"
+                        android:textColor="@color/editor_chip_text"
+                        android:textSize="10.5sp" />
+
+                    <ImageView
+                        android:id="@+id/scribble_crop_aspect_lock"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_crop_lock_32"
+                        app:tint="@color/chat_header_title" />
+
+                    <ImageView
+                        android:id="@+id/scribble_crop_rotate"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_marginStart="16dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_editor_rotate"
+                        app:tint="@color/chat_header_title" />
+
+                    <ImageView
+                        android:id="@+id/scribble_crop_flip"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_marginStart="16dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_editor_flip"
+                        app:tint="@color/chat_header_title" />
+
+                    <ImageView
+                        android:id="@+id/scribble_delete_button"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:importantForAccessibility="no"
+                        android:padding="1dp"
+                        android:src="@drawable/ic_editor_trash" />
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/scribble_colors"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginStart="13dp"
+                android:layout_marginTop="19dp"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/editor_swatch_ring">
+
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:background="@color/text_white" />
+
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/editor_swatch_edge" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/editor_swatch_ring">
+
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:background="@color/editor_swatch_black" />
+
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/editor_swatch_edge" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/editor_swatch_ring">
+
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:background="@color/rounded_indicator" />
+
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/editor_swatch_edge" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/editor_swatch_ring">
+
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:background="@color/editor_swatch_blue" />
+
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/editor_swatch_edge" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/editor_swatch_ring">
+
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:background="@color/editor_swatch_yellow" />
+
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/editor_swatch_edge" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/editor_swatch_ring">
+
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:background="@color/clear_red_color" />
+
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/editor_swatch_edge" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/editor_swatch_ring">
+
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:background="@color/editor_swatch_purple" />
+
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/editor_swatch_edge" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="28dp"
+                android:layout_marginEnd="14dp"
+                android:baselineAligned="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/scribble_cancel_button"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:elevation="0dp"
+                    android:fontFamily="@font/roboto_mono"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:minHeight="0dp"
+                    android:paddingStart="0dp"
+                    android:paddingTop="0dp"
+                    android:paddingEnd="0dp"
+                    android:paddingBottom="0dp"
+                    android:stateListAnimator="@null"
+                    android:text="@string/cancel"
+                    android:textAllCaps="false"
+                    android:textColor="@color/chat_header_title"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/reaction_pill_background"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.NotchedButton"
+                    app:strokeColor="@color/attachment_tray_border"
+                    app:strokeWidth="1dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/scribble_done_button"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:elevation="0dp"
+                    android:fontFamily="@font/roboto_mono"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:minHeight="0dp"
+                    android:paddingStart="0dp"
+                    android:paddingTop="0dp"
+                    android:paddingEnd="0dp"
+                    android:paddingBottom="0dp"
+                    android:stateListAnimator="@null"
+                    android:text="@string/menu_done_button"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_color_dark"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/chat_message_request_accept_background"
+                    app:icon="@drawable/ic_editor_check"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    app:iconSize="16dp"
+                    app:iconTint="@color/text_color_dark"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.NotchedButton" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/scribble_emoji_panel"
+            android:layout_width="0dp"
+            android:layout_height="332dp"
+            android:background="@drawable/editor_panel_background"
+            android:clickable="true"
+            android:focusable="false"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <View
+                android:layout_width="40dp"
+                android:layout_height="3dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/editor_grabber" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="7dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/editor_rail_add_background"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="12dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_editor_search"
+                    app:tint="@color/chat_input_hint" />
+
+                <EditText
+                    android:id="@+id/scribble_emoji_search"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:fontFamily="@font/roboto_mono"
+                    android:hint="@string/image_editor_search_emoji"
+                    android:imeOptions="actionSearch"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    android:letterSpacing="0.03"
+                    android:maxLines="1"
+                    android:padding="0dp"
+                    android:textColor="@color/chat_header_title"
+                    android:textColorHint="@color/chat_input_hint"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/scribble_emoji_tabs"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/scribble_emoji_tab_recent"
+                    android:layout_width="40dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/editor_tab_background"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="10dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="8dp"
+                    android:src="@drawable/ic_editor_recent"
+                    app:tint="@color/editor_tab_tint" />
+
+                <ImageView
+                    android:id="@+id/scribble_emoji_tab_people"
+                    android:layout_width="40dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/editor_tab_background"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="10dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="8dp"
+                    android:src="@drawable/ic_editor_emoji"
+                    app:tint="@color/editor_tab_tint" />
+
+                <ImageView
+                    android:id="@+id/scribble_emoji_tab_nature"
+                    android:layout_width="40dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/editor_tab_background"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="10dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="8dp"
+                    android:src="@drawable/ic_editor_nature"
+                    app:tint="@color/editor_tab_tint" />
+
+                <ImageView
+                    android:id="@+id/scribble_emoji_tab_foods"
+                    android:layout_width="40dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/editor_tab_background"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="10dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="8dp"
+                    android:src="@drawable/ic_editor_food"
+                    app:tint="@color/editor_tab_tint" />
+
+                <ImageView
+                    android:id="@+id/scribble_emoji_tab_activity"
+                    android:layout_width="40dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/editor_tab_background"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="10dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="8dp"
+                    android:src="@drawable/ic_editor_activity"
+                    app:tint="@color/editor_tab_tint" />
+
+                <ImageView
+                    android:id="@+id/scribble_emoji_tab_places"
+                    android:layout_width="40dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/editor_tab_background"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="10dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="8dp"
+                    android:src="@drawable/ic_editor_travel"
+                    app:tint="@color/editor_tab_tint" />
+
+                <ImageView
+                    android:id="@+id/scribble_emoji_tab_symbols"
+                    android:layout_width="40dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/editor_tab_background"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="10dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="8dp"
+                    android:src="@drawable/ic_editor_symbols"
+                    app:tint="@color/editor_tab_tint" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="4dp"
+                android:background="@color/chat_header_border" />
+
+            <TextView
+                android:id="@+id/scribble_emoji_section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="9dp"
+                android:fontFamily="@font/roboto_mono"
+                android:letterSpacing="0.08"
+                android:textAllCaps="true"
+                android:textColor="@color/chat_input_hint"
+                android:textSize="10sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/scribble_emoji_grid"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="15dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:paddingBottom="8dp" />
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

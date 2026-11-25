@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="56dp"
     android:layout_height="56dp"
-    android:layout_margin="2dp"
-    android:background="@drawable/mediarail_button_background">
+    android:foreground="?attr/selectableItemBackground">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <FrameLayout
+        android:layout_width="52dp"
+        android:layout_height="52dp"
         android:layout_gravity="center"
-        android:src="@drawable/ic_plus_28"
-        android:elevation="4dp" />
+        android:background="@drawable/editor_rail_add_background">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_editor_plus"
+            app:tint="@color/contact_card_action_text" />
+
+    </FrameLayout>
 
 </FrameLayout>

@@ -830,13 +830,10 @@
 
                             <ImageView
                                 android:id="@+id/messageRequestCloseButton"
-                                android:layout_width="28dp"
-                                android:layout_height="28dp"
-                                android:background="@drawable/message_request_close_bg"
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
                                 android:contentDescription="@string/close"
-                                android:padding="6dp"
-                                android:src="@drawable/ic_close"
-                                app:tint="@color/mr_close_icon" />
+                                android:src="@drawable/ic_reactions_close_tile" />
                         </LinearLayout>
 
                         <TextView

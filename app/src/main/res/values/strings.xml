@@ -1778,4 +1778,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="call_duration_hours_minutes">%1$s %2$s</string>
     <string name="camera_access_title">Allow camera access</string>
     <string name="camera_access_description">BChat needs your camera to scan QR codes. It is only used while scanning.</string>
+    <string name="image_editor_crop_title">Crop</string>
+    <string name="image_editor_reset">RESET</string>
+    <string name="image_editor_pen">PEN</string>
+    <string name="image_editor_marker">MARKER</string>
+    <string name="image_editor_search_emoji">SEARCH EMOJI</string>
 </resources>

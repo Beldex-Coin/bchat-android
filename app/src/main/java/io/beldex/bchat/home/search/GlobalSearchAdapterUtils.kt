@@ -1,9 +1,9 @@
 package io.beldex.bchat.home.search
 
-import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.text.style.StyleSpan
+import android.text.style.BackgroundColorSpan
+import android.text.style.ForegroundColorSpan
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import com.beldex.libbchat.messaging.contacts.Contact
@@ -38,8 +38,6 @@ class GlobalSearchDiff(
         if (oldQuery != newQuery) newQuery
         else null
 }
-
-private val BoldStyleFactory = { StyleSpan(Typeface.BOLD) }
 
 fun ContentView.bindQuery(query: String, model: GlobalSearchAdapter.Model) {
     when (model) {
@@ -80,8 +78,15 @@ fun ContentView.bindQuery(query: String, model: GlobalSearchAdapter.Model) {
     }
 }
 
-private fun getHighlight(query: String?, toSearch: String): Spannable? {
-    return SearchUtil.getHighlightedSpan(Locale.getDefault(), BoldStyleFactory, toSearch, query)
+private fun ContentView.getHighlight(query: String?, toSearch: String): Spannable {
+    val context = binding.root.context
+    var highlighted = SearchUtil.getHighlightedSpanBuilder(Locale.getDefault(),
+        { BackgroundColorSpan(context.getColor(R.color.send_button_background)) }, SpannableStringBuilder(toSearch), query
+    )
+    highlighted = SearchUtil.getHighlightedSpanBuilder(Locale.getDefault(),
+        { ForegroundColorSpan(context.getColor(R.color.text_color_dark)) }, highlighted, query
+    )
+    return highlighted
 }
 
 fun ContentView.bindModel(query: String?, model: GroupConversation) {

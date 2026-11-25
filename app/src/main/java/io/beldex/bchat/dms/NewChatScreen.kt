@@ -53,6 +53,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.LaunchedEffect
+import android.widget.Toast
+import io.beldex.bchat.util.BChatToast
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -172,7 +175,7 @@ fun NewChatScreen(
                         Icon(
                             painterResource(id = R.drawable.ic_search_contact),
                             contentDescription = stringResource(R.string.search_contact),
-                            tint = MaterialTheme.appColors.editTextColor
+                            tint = colorResource(R.color.chat_meta_text)
                         )
                     }
                 }
@@ -508,6 +511,13 @@ fun NewChatPopUp(
         mutableStateOf("")
     }
     val bchatIdErrorStatus = hasError
+    val context = LocalContext.current
+
+    LaunchedEffect(bchatIdErrorStatus) {
+        if (bchatIdErrorStatus) {
+            BChatToast.error(context, R.string.enter_correct_bchat_id, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     DialogContainer(onDismissRequest = {}) {
 
@@ -529,10 +539,7 @@ fun NewChatPopUp(
                     .fillMaxWidth()
                     .height(115.dp)
                     .background(MaterialTheme.appColors.dialogBackground)
-                    .border(
-                        1.dp,
-                        if (bchatIdErrorStatus) MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.optionBorder
-                    )
+                    .border(1.dp, MaterialTheme.appColors.optionBorder)
                     .padding(horizontal = 14.dp, vertical = 12.dp)
             ) {
                 if (bChatId.isEmpty()) {
@@ -558,16 +565,6 @@ fun NewChatPopUp(
                     ),
                     cursorBrush = SolidColor(MaterialTheme.appColors.textSelectionColor),
                     modifier = Modifier.fillMaxSize()
-                )
-            }
-
-            if (bchatIdErrorStatus) {
-                Text(
-                    text = stringResource(R.string.enter_correct_bchat_id),
-                    fontFamily = RobotoMono,
-                    color = MaterialTheme.appColors.negativeRedButtonBorder,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(top = 6.dp)
                 )
             }
 

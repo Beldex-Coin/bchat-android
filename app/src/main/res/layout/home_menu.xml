@@ -184,7 +184,7 @@
                     android:layout_marginEnd="10dp"
                     android:fontFamily="@font/open_sans_semi_bold"
                     android:text="@string/dark_mode"
-                    android:textColor="@color/drawer_text"
+                    android:textColor="@color/chat_header_title"
                     android:textSize="12sp" />
 
                 <androidx.appcompat.widget.SwitchCompat
@@ -192,10 +192,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:thumb="@drawable/switch_square_thumb"
+                    android:thumb="@drawable/drawer_mode_thumb"
                     app:showText="false"
                     app:thumbTint="@null"
-                    app:track="@drawable/switch_square_track"
+                    app:track="@drawable/drawer_mode_track"
                     app:trackTint="@null" />
 
             </LinearLayout>
@@ -207,7 +207,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/open_sans_regular"
                 android:textAlignment="viewEnd"
-                android:textColor="@color/drawer_version_text"
+                android:textColor="@color/chat_meta_text"
                 android:textStyle="normal"
                 android:textSize="12sp"
                 android:clickable="true"

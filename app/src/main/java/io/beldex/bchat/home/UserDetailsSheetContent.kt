@@ -53,8 +53,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.beldex.bchat.R
 import io.beldex.bchat.compose_utils.BChatDimens
+import io.beldex.bchat.compose_utils.CloseTile
 import io.beldex.bchat.compose_utils.CursorGapTransformation
-import io.beldex.bchat.compose_utils.NotchCorner
 import io.beldex.bchat.compose_utils.OpenSans
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
@@ -62,7 +62,6 @@ import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.RobotoMono
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.compose_utils.notchedCornerShape
-import io.beldex.bchat.compose_utils.singleCornerCutShape
 
 /**
  * Revamp_2026 contact-details bottom sheet content (Figma `profile_Detail` 7546:2219 / view state,
@@ -183,32 +182,7 @@ fun UserDetailsSheetContent(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .size(23.dp)
-                            .background(
-                                MaterialTheme.appColors.nicknameCancelBackground,
-                                singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight)
-                            )
-                            .border(
-                                0.36.dp,
-                                MaterialTheme.appColors.nicknameCancelBorder,
-                                singleCornerCutShape(BChatDimens.NotchSmall, NotchCorner.TopRight)
-                            )
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                onClick = onCancelEditClick
-                            )
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_close),
-                            contentDescription = stringResource(R.string.cancel),
-                            tint = MaterialTheme.appColors.cancelIconTint,
-                            modifier = Modifier.size(12.dp)
-                        )
-                    }
+                    CloseTile(onClick = onCancelEditClick, size = 24.dp)
 
                     Box(
                         contentAlignment = Alignment.Center,

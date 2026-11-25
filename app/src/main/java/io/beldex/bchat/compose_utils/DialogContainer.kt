@@ -36,6 +36,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -364,21 +365,14 @@ fun PopupBody(
 
 /** Square #222 close tile with an X, used at the top right of popups. */
 @Composable
-fun CloseTile(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Box(
-        contentAlignment = Alignment.Center,
+fun CloseTile(onClick: () -> Unit, modifier: Modifier = Modifier, size: Dp = 22.dp) {
+    Image(
+        painter = painterResource(id = R.drawable.ic_reactions_close_tile),
+        contentDescription = stringResource(id = R.string.close),
         modifier = modifier
-            .size(24.dp)
-            .background(MaterialTheme.appColors.userDetailsCancelBackground)
+            .size(size)
             .clickable(onClick = onClick)
-    ) {
-        androidx.compose.material3.Icon(
-            painter = painterResource(id = R.drawable.ic_close),
-            contentDescription = null,
-            tint = MaterialTheme.appColors.editTextColor,
-            modifier = Modifier.size(14.dp)
-        )
-    }
+    )
 }
 
 @Composable

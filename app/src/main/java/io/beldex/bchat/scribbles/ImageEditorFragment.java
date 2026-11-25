@@ -1,6 +1,5 @@
 package io.beldex.bchat.scribbles;
 
-import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,27 +19,25 @@ import io.beldex.bchat.imageeditor.ImageEditorView;
 import io.beldex.bchat.imageeditor.Renderer;
 import io.beldex.bchat.imageeditor.model.EditorElement;
 import io.beldex.bchat.imageeditor.model.EditorModel;
+import io.beldex.bchat.imageeditor.renderers.EmojiRenderer;
 import io.beldex.bchat.imageeditor.renderers.TextRenderer;
 import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.mediasend.MediaSendPageFragment;
 import io.beldex.bchat.mms.MediaConstraints;
 import io.beldex.bchat.mms.PushMediaConstraints;
-import io.beldex.bchat.scribbles.widget.VerticalSlideColorPicker;
 import io.beldex.bchat.util.ParcelUtil;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 
-import static android.app.Activity.RESULT_OK;
 import androidx.core.graphics.Insets;
 
 public final class ImageEditorFragment extends Fragment implements ImageEditorHud.EventListener,
-        VerticalSlideColorPicker.OnColorChangeListener,
         MediaSendPageFragment {
 
   private static final String TAG = Log.tag(ImageEditorFragment.class);
 
   private static final String KEY_IMAGE_URI = "image_uri";
 
-  public static final int SELECT_STICKER_REQUEST_CODE = 123;
+  private static final int MAX_CROP_RESET_STEPS = 100;
 
   private EditorModel restoredModel;
 
@@ -48,6 +45,11 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
   private EditorElement currentSelection;
   private int           imageMaxHeight;
   private int           imageMaxWidth;
+  private boolean       undoAvailable;
+
+  @Nullable
+  private byte[]              modeSnapshot;
+  private ImageEditorHud.Mode currentMode = ImageEditorHud.Mode.NONE;
 
   public static class Data {
     private final Bundle bundle;
@@ -131,7 +133,6 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
     scribbleCloseButton.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
 
     imageEditorView.setTapListener(selectionListener);
-    imageEditorView.setDrawingChangedListener(this::refreshUniqueColors);
     imageEditorView.setUndoRedoStackListener(this::onUndoRedoAvailabilityChanged);
 
     EditorModel editorModel = null;
@@ -152,11 +153,11 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
 
     imageEditorView.setModel(editorModel);
 
-    refreshUniqueColors();
-
     ViewCompat.setOnApplyWindowInsetsListener(imageEditorHud, (v, insets) -> {
       Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-      v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+      Insets ime        = insets.getInsets(WindowInsetsCompat.Type.ime());
+      v.setPadding(systemBars.left, 0, systemBars.right, 0);
+      imageEditorHud.setBottomInset(Math.max(systemBars.bottom, ime.bottom));
       return insets;
     });
 
@@ -212,7 +213,6 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
       if (model != null) {
         if (imageEditorView != null) {
           imageEditorView.setModel(model);
-          refreshUniqueColors();
         } else {
           this.restoredModel = model;
         }
@@ -227,7 +227,6 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
       Renderer renderer = currentSelection.getRenderer();
       if (renderer instanceof ColorableRenderer) {
         ((ColorableRenderer) renderer).setColor(selectedColor);
-        refreshUniqueColors();
       }
     }
   }
@@ -251,22 +250,39 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
   }
 
   @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode == RESULT_OK && requestCode == SELECT_STICKER_REQUEST_CODE && data != null) {
-      final String stickerFile = data.getStringExtra(StickerSelectActivity.EXTRA_STICKER_FILE);
-
-      UriGlideRenderer renderer = new UriGlideRenderer(Uri.parse("file:///android_asset/" + stickerFile), false, imageMaxWidth, imageMaxHeight);
-      EditorElement element     = new EditorElement(renderer);
-      imageEditorView.getModel().addElementCentered(element, 0.2f);
-      currentSelection = element;
-    } else {
-      imageEditorHud.enterMode(ImageEditorHud.Mode.NONE);
+  public void onBottomPanelHeightChanged(int height) {
+    ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) imageEditorView.getLayoutParams();
+    if (params.bottomMargin != height) {
+      params.bottomMargin = height;
+      imageEditorView.setLayoutParams(params);
     }
   }
 
   @Override
+  public void onEmojiSelected(@NonNull String emoji) {
+    EditorElement element = new EditorElement(new EmojiRenderer(emoji));
+    imageEditorView.getModel().addElementCentered(element, 0.2f);
+    imageEditorView.invalidate();
+    currentSelection = element;
+  }
+
+  private void enterHudMode(@NonNull ImageEditorHud.Mode mode) {
+    trackMode(mode);
+    imageEditorHud.enterMode(mode);
+  }
+
+  private void trackMode(@NonNull ImageEditorHud.Mode mode) {
+    if (mode == ImageEditorHud.Mode.NONE) {
+      modeSnapshot = null;
+    } else if (currentMode == ImageEditorHud.Mode.NONE) {
+      modeSnapshot = ParcelUtil.serialize(imageEditorView.getModel());
+    }
+    currentMode = mode;
+  }
+
+  @Override
   public void onModeStarted(@NonNull ImageEditorHud.Mode mode) {
+    trackMode(mode);
     imageEditorView.setMode(ImageEditorView.Mode.MoveAndResize);
     imageEditorView.doneTextEditing();
 
@@ -289,10 +305,6 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
         addText();
         break;
 
-      case MOVE_DELETE:
-        Intent intent = new Intent(getContext(), StickerSelectActivity.class);
-        startActivityForResult(intent, SELECT_STICKER_REQUEST_CODE);
-        break;
 
       case NONE:
         imageEditorView.getModel().doneCrop();
@@ -310,13 +322,33 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
   @Override
   public void onUndo() {
     imageEditorView.getModel().undo();
-    refreshUniqueColors();
+  }
+
+  @Override
+  public void onRedo() {
+    imageEditorView.getModel().redo();
   }
 
   @Override
   public void onDelete() {
     imageEditorView.deleteElement(currentSelection);
-    refreshUniqueColors();
+  }
+
+  @Override
+  public void onCancel() {
+    if (modeSnapshot != null) {
+      EditorModel model = ParcelUtil.deserialize(modeSnapshot, EditorModel.CREATOR);
+      imageEditorView.doneTextEditing();
+      imageEditorView.setModel(model);
+      currentSelection = null;
+    }
+  }
+
+  @Override
+  public void onCropReset() {
+    for (int i = 0; undoAvailable && i < MAX_CROP_RESET_STEPS; i++) {
+      imageEditorView.getModel().undo();
+    }
   }
 
   @Override
@@ -344,12 +376,10 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
     controller.onRequestFullScreen(fullScreen);
   }
 
-  private void refreshUniqueColors() {
-    imageEditorHud.setColorPalette(imageEditorView.getModel().getUniqueColorsIgnoringAlpha());
-  }
-
   private void onUndoRedoAvailabilityChanged(boolean undoAvailable, boolean redoAvailable) {
+    this.undoAvailable = undoAvailable;
     imageEditorHud.setUndoAvailability(undoAvailable);
+    imageEditorHud.setRedoAvailability(redoAvailable);
   }
 
    private final ImageEditorView.TapListener selectionListener = new ImageEditorView.TapListener() {
@@ -361,7 +391,7 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
        } else {
          currentSelection = null;
          controller.onTouchEventsNeeded(false);
-         imageEditorHud.enterMode(ImageEditorHud.Mode.NONE);
+         enterHudMode(ImageEditorHud.Mode.NONE);
          imageEditorView.doneTextEditing();
        }
      }
@@ -373,7 +403,7 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
          if (editorElement.getRenderer() instanceof TextRenderer) {
            setTextElement(editorElement, (ColorableRenderer) editorElement.getRenderer(), imageEditorView.isTextEditing());
          } else {
-           imageEditorHud.enterMode(ImageEditorHud.Mode.MOVE_DELETE);
+           enterHudMode(ImageEditorHud.Mode.MOVE_DELETE);
          }
        }
      }
@@ -391,7 +421,7 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
                                  boolean startEditing)
      {
        int color = colorableRenderer.getColor();
-       imageEditorHud.enterMode(ImageEditorHud.Mode.TEXT);
+       enterHudMode(ImageEditorHud.Mode.TEXT);
        imageEditorHud.setActiveColor(color);
        if (startEditing) {
          startTextEntityEditing(editorElement, false);

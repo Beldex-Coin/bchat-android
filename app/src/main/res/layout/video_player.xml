@@ -14,4 +14,15 @@
         android:gravity="center"
         app:player_layout_id="@layout/media_preview_exoplayer_layout"/>
 
+    <FrameLayout
+        android:id="@+id/video_play_overlay"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:background="@drawable/ic_editor_video_play_large"
+        android:clickable="true"
+        android:contentDescription="@string/audio_view__play_accessibility_description"
+        android:focusable="true"
+        android:visibility="gone" />
+
 </FrameLayout>

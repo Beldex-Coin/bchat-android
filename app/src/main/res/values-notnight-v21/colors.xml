@@ -370,7 +370,7 @@
     <color name="attachment_tray_border">#D0D0D0</color>
     <color name="attachment_tile_background">#33FFFFFF</color>
     <color name="attachment_tile_border">#FFFFFF</color>
-    <color name="attachment_tile_border_start">#D0D0D0</color>
+    <color name="attachment_tile_border_start">#00FFFFFF</color>
     <color name="chat_header_background">#F0F0F0</color>
     <color name="chat_header_title">#222222</color>
     <color name="chat_header_border">#E6E6E6</color>
@@ -385,6 +385,9 @@
     <color name="call_card_inner_background">#F5F5F5</color>
     <color name="scan_qr_info_background">#66F8F8F8</color>
     <color name="home_row_pinned_fill">#80FFFFFF</color>
-    <!-- Outline around the phone badge on the incoming call card avatar (7546:20013 / 7762:22886). -->
     <color name="call_banner_badge_outline">#FFFFFF</color>
+    <color name="editor_panel_background">#E6FFFFFF</color>
+    <color name="editor_tool_active_background">#1A078720</color>
+    <color name="editor_chip_background">#FFFFFF</color>
+    <color name="reaction_pill_background">#FFFFFF</color>
 </resources>

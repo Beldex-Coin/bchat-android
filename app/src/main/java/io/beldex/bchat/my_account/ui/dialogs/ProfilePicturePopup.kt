@@ -3,6 +3,7 @@ package io.beldex.bchat.my_account.ui.dialogs
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import io.beldex.bchat.compose_utils.NotchedAvatarShape
+import io.beldex.bchat.compose_utils.CloseTile
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.border
 import androidx.compose.foundation.background
@@ -97,15 +98,9 @@ fun ProfilePicturePopup(
                     modifier = Modifier
                         .fillMaxWidth()
                 )
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_close),
-                    contentDescription = stringResource(id = R.string.close),
-                    tint = MaterialTheme.appColors.secondaryContentColor,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .clickable {
-                            closePopUP()
-                        }
+                CloseTile(
+                    onClick = { closePopUP() },
+                    modifier = Modifier.align(Alignment.TopEnd)
                 )
             }
 

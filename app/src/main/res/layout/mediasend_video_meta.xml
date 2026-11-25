@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="40dp">
+
+    <TextView
+        android:id="@+id/mediasend_video_meta"
+        android:layout_width="wrap_content"
+        android:layout_height="22dp"
+        android:layout_gravity="end|center_vertical"
+        android:background="@drawable/editor_meta_background"
+        android:fontFamily="@font/roboto_mono"
+        android:gravity="center"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textColor="@color/contact_card_action_text"
+        android:textSize="10.5sp"
+        android:visibility="invisible"
+        tools:text="00:08 · 2.4 MB"
+        tools:visibility="visible" />
+
+</FrameLayout>

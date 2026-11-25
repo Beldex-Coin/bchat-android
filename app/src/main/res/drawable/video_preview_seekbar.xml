@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@android:id/background"
+        android:gravity="center_vertical|fill_horizontal"
+        android:height="3dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/preview_player_track" />
+        </shape>
+    </item>
+    <item
+        android:id="@android:id/progress"
+        android:gravity="center_vertical|fill_horizontal"
+        android:height="3dp">
+        <clip>
+            <shape android:shape="rectangle">
+                <solid android:color="@color/preview_player_progress" />
+            </shape>
+        </clip>
+    </item>
+</layer-list>

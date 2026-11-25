@@ -494,4 +494,7 @@
     <color name="editor_rail_remove_background">#B80B0B0B</color>
     <color name="editor_video_track">#4DFFFFFF</color>
     <color name="editor_video_duration">#BFFFFFFF</color>
+    <color name="preview_player_background">#F8F8F8</color>
+    <color name="preview_player_track">#808A8A9D</color>
+    <color name="preview_player_progress">#333333</color>
 </resources>

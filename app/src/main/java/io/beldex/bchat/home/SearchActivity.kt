@@ -9,6 +9,15 @@ import android.os.Bundle
 import android.text.SpannableStringBuilder
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -350,6 +359,7 @@ private fun SearchView(
                     is SearchResults.Message -> {
                         MessageView(
                             model = it,
+                            query = searchQuery,
                             onClick = onSearchResultClick
                         )
                     }
@@ -436,6 +446,7 @@ private fun ContactView(
 @Composable
 private fun MessageView(
     model: SearchResults.Message,
+    query: String,
     onClick: (SearchResults) -> Unit
 ) {
     val context = LocalContext.current
@@ -462,6 +473,19 @@ private fun MessageView(
         val annotatedText = remember(model.messageResult.bodySnippet, model.messageResult.messageRecipient) {
             TextFormatter.formatForSentMessage(context, textSpannable).toAnnotatedString()
         }
+        val highlightTextColor = MaterialTheme.appColors.dialogPositiveButtonText
+        val highlightBackground = MaterialTheme.appColors.searchHighlightBackground
+        val highlightRanges = remember(annotatedText, query) {
+            findHighlightRanges(annotatedText.text, query)
+        }
+        val highlightedText = remember(annotatedText, highlightRanges, highlightTextColor) {
+            AnnotatedString.Builder(annotatedText).apply {
+                highlightRanges.forEach { range ->
+                    addStyle(SpanStyle(color = highlightTextColor), range.first, range.last + 1)
+                }
+            }.toAnnotatedString()
+        }
+        var snippetLayout by remember { mutableStateOf<TextLayoutResult?>(null) }
 
         val address = recipient.address
         if (recipient.isGroupRecipient) {
@@ -519,16 +543,50 @@ private fun MessageView(
                     overflow = TextOverflow.Ellipsis
                 )
             }
+            // Figma: each match sits on a small filled chip (2dp radius, 2dp/1dp padding).
             Text(
-                text = annotatedText,
+                text = highlightedText,
                 fontFamily = RobotoMono,
                 fontSize = 12.sp,
                 color = MaterialTheme.appColors.onboardingBodyColor,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                onTextLayout = { snippetLayout = it },
+                modifier = Modifier.drawBehind {
+                    val layout = snippetLayout ?: return@drawBehind
+                    if (layout.lineCount == 0) return@drawBehind
+                    val visibleEnd = layout.getLineEnd(0, visibleEnd = true)
+                    val horizontalPadding = 2.dp.toPx()
+                    val verticalPadding = 1.dp.toPx()
+                    val top = layout.getLineTop(0) - verticalPadding
+                    val height = layout.getLineBottom(0) - layout.getLineTop(0) + verticalPadding * 2
+                    highlightRanges.forEach { range ->
+                        if (range.first >= visibleEnd) return@forEach
+                        val startBox = layout.getBoundingBox(range.first)
+                        val endBox = layout.getBoundingBox(minOf(range.last, visibleEnd - 1))
+                        drawRoundRect(
+                            color = highlightBackground,
+                            topLeft = Offset(startBox.left - horizontalPadding, top),
+                            size = Size(endBox.right - startBox.left + horizontalPadding * 2, height),
+                            cornerRadius = CornerRadius(2.dp.toPx())
+                        )
+                    }
+                }
             )
         }
     }
+}
+
+private fun findHighlightRanges(text: String, query: String): List<IntRange> {
+    val ranges = mutableListOf<IntRange>()
+    query.trim().split(Regex("\\s+")).filter { it.isNotEmpty() }.forEach { term ->
+        var index = text.indexOf(term, 0, ignoreCase = true)
+        while (index >= 0) {
+            ranges.add(index until index + term.length)
+            index = text.indexOf(term, index + term.length, ignoreCase = true)
+        }
+    }
+    return ranges
 }
 
 @Composable

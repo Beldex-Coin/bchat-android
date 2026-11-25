@@ -58,9 +58,10 @@ class ControlMessageView : LinearLayout {
         val left = messageBody.toString() == context.getString(R.string.MessageRecord_left_group)
         binding.textView.background = NotchedDrawable(
             6 * density, if (left) 0.75f * density else 0f,
-            ContextCompat.getColor(context, R.color.group_left_message_background), 0xFFFF3D3D.toInt()
+            ContextCompat.getColor(context, if (left) R.color.blocked_action_red_bg else R.color.group_left_message_background),
+            ContextCompat.getColor(context, R.color.blocked_action_red)
         )
-        binding.textView.setTextColor(if (left) 0xFFFF3D3D.toInt() else ContextCompat.getColor(context, R.color.chat_meta_text))
+        binding.textView.setTextColor(ContextCompat.getColor(context, if (left) R.color.blocked_action_red else R.color.chat_meta_text))
         binding.dateBreakTextView.background = NotchedDrawable(
             8 * density, 0.5f * density,
             ContextCompat.getColor(context, R.color.date_chip_background),

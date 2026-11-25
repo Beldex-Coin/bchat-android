@@ -390,4 +390,7 @@
     <color name="editor_tool_active_background">#1A078720</color>
     <color name="editor_chip_background">#FFFFFF</color>
     <color name="reaction_pill_background">#FFFFFF</color>
+    <color name="preview_player_background">#0B0B0B</color>
+    <color name="preview_player_track">#80747474</color>
+    <color name="preview_player_progress">#E1E1E1</color>
 </resources>

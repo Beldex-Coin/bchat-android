@@ -151,6 +151,7 @@ class Colors() {
     var popupCloseTileBackground: Color = Color.Unspecified
     var popupCloseTileBorder: Color = Color.Unspecified
     var languageSelectedBackground: Color = Color.Unspecified
+    var searchHighlightBackground: Color = Color.Unspecified
 }
 
 val lightColors = Colors().apply {
@@ -268,6 +269,7 @@ val lightColors = Colors().apply {
     popupCloseTileBackground = Color(0xCCFFFFFF)
     popupCloseTileBorder = Color(0xFFC4C4C4)
     languageSelectedBackground = Color(0xFFFFFFFF)
+    searchHighlightBackground = Color(0xFFD4D4D4)
 
 }
 
@@ -386,6 +388,7 @@ val darkColors = Colors().apply {
     popupCloseTileBackground = Color(0xCC222222)
     popupCloseTileBorder = Color(0xFF444444)
     languageSelectedBackground = Color(0xFF0B1210)
+    searchHighlightBackground = Color(0xFFEBEBEB)
 
 }
 

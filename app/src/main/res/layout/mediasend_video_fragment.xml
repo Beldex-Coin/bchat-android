@@ -10,6 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <FrameLayout
+        android:id="@+id/mediasend_video_play"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:background="@drawable/ic_editor_video_play_large"
+        android:clickable="true"
+        android:contentDescription="@string/audio_view__play_accessibility_description"
+        android:focusable="true" />
+
     <androidx.media3.ui.LegacyPlayerControlView
         android:id="@+id/mediasend_video_controls"
         android:layout_width="match_parent"

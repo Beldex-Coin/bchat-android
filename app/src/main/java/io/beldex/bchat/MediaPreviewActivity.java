@@ -780,7 +780,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
     @Override
     public @NonNull Object instantiateItem(@NonNull ViewGroup container, int position) {
-      View      itemView       = LayoutInflater.from(context).inflate(R.layout.media_view_page, container, false);
+      View      itemView       = LayoutInflater.from(container.getContext()).inflate(R.layout.media_view_page, container, false);
       MediaView mediaView      = itemView.findViewById(R.id.media_view);
       boolean   autoplay       = position == autoPlayPosition;
       int       cursorPosition = getCursorPosition(position);

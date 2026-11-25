@@ -26,23 +26,19 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -191,68 +187,81 @@ fun NewChatScreen(
             )
             {
                 if(showSearchOption) {
-                    TextField(
+                    // Figma New Chat search (7546:3206 / 7762:6945): square 48dp field, #111111 / #333333 dark,
+                    // #FFFFFF / #DDDDDD white, 18dp padding, 14dp search icon, 11dp gap, uppercase hint.
+                    BasicTextField(
                         value = searchQuery,
-                        placeholder = {
-                            // Figma New Chat search (7546:3366 / 7762:7105): "Search people and groups",
-                            // Roboto Mono Light 14sp, #737373 dark / #8D8D8D white.
-                            Text(
-                                text = stringResource(R.string.search_people_and_groups),
-                                modifier = Modifier.padding(start = 4.dp),
-                                softWrap = false,
-                                fontFamily = RobotoMono,
-                                fontWeight = FontWeight.Light,
-                                fontSize = 14.sp,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                color = colorResource(R.color.chat_input_hint)
-                            )
+                        onValueChange = {
+                            onEvent(it)
                         },
                         singleLine = true,
+                        textStyle = TextStyle(
+                            fontFamily = RobotoMono,
+                            fontWeight = FontWeight.Light,
+                            fontSize = 14.sp,
+                            color = MaterialTheme.appColors.callContentColor
+                        ),
+                        cursorBrush = SolidColor(MaterialTheme.appColors.textSelectionColor),
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Done
                         ),
-                        onValueChange = {
-                            onEvent(it)
-                        },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Clear,
-                                contentDescription = "clear search text",
-                                tint = colorResource(R.color.chat_input_hint),
-                                modifier=Modifier.clickable {
-                                    if (searchQuery.isNotEmpty()) {
-                                        onEvent("")
-                                    } else {
-                                        showSearchOption=false
+                            .padding(start = 16.dp, end = 16.dp, top = 8.dp)
+                            .height(48.dp)
+                            .background(MaterialTheme.appColors.selectedItemBackground)
+                            .border(1.dp, MaterialTheme.appColors.callDeviceCardBorder),
+                        decorationBox = { innerTextField ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(start = 18.dp, end = 8.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_home_search),
+                                    contentDescription = stringResource(R.string.search_contact),
+                                    tint = colorResource(R.color.chat_input_hint),
+                                    modifier = Modifier.size(14.dp)
+                                )
+                                Spacer(modifier = Modifier.width(11.dp))
+                                Box(
+                                    contentAlignment = Alignment.CenterStart,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    if (searchQuery.isEmpty()) {
+                                        Text(
+                                            text = stringResource(R.string.search_people_and_groups).uppercase(),
+                                            fontFamily = RobotoMono,
+                                            fontWeight = FontWeight.Light,
+                                            fontSize = 14.sp,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            color = colorResource(R.color.chat_input_hint)
+                                        )
                                     }
+                                    innerTextField()
                                 }
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = "search contact",
-                                tint = colorResource(R.color.chat_input_hint),
-                            )
-                        },
-                        colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = MaterialTheme.appColors.dialogBackground,
-                            focusedContainerColor = MaterialTheme.appColors.dialogBackground,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent,
-                            selectionColors = TextSelectionColors(
-                                MaterialTheme.appColors.textSelectionColor,
-                                MaterialTheme.appColors.textSelectionColor
-                            ),
-                            cursorColor = MaterialTheme.appColors.textSelectionColor
-                        )
+                                IconButton(
+                                    onClick = {
+                                        if (searchQuery.isNotEmpty()) {
+                                            onEvent("")
+                                        } else {
+                                            showSearchOption = false
+                                        }
+                                    },
+                                    modifier = Modifier.size(32.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Clear,
+                                        contentDescription = "clear search text",
+                                        tint = MaterialTheme.appColors.callContentColor,
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                }
+                            }
+                        }
                     )
                 }
 

@@ -72,13 +72,23 @@ public class MediaSendVideoFragment extends Fragment implements MediaSendPageFra
     Player player = videoPlayer.getPlayer();
     if (player == null) return;
 
-    LegacyPlayerControlView controls = view.findViewById(R.id.mediasend_video_controls);
-    TextView                meta     = metaView.findViewById(R.id.mediasend_video_meta);
+    View                    playButton = view.findViewById(R.id.mediasend_video_play);
+    LegacyPlayerControlView controls   = view.findViewById(R.id.mediasend_video_controls);
+    TextView                meta       = metaView.findViewById(R.id.mediasend_video_meta);
+
+    videoPlayer.setCenterControlEnabled(false);
+    playButton.setOnClickListener(v -> player.play());
 
     controls.setPlayer(player);
     controls.show();
 
     player.addListener(new Player.Listener() {
+      @Override
+      public void onIsPlayingChanged(boolean isPlaying) {
+        playButton.setVisibility(isPlaying ? View.GONE : View.VISIBLE);
+      }
+
+
       @Override
       public void onPlaybackStateChanged(int playbackState) {
         if (playbackState == Player.STATE_READY && player.getDuration() != C.TIME_UNSET) {
